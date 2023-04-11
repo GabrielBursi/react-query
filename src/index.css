@@ -30,6 +30,9 @@
   -moz-column-gap: 20px;
        column-gap: 20px;
 }
+.App main .spinner {
+  margin: auto auto;
+}
 .App footer {
   height: 10%;
   width: 100%;

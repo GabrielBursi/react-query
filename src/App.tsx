@@ -1,20 +1,17 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { CardComponent, FilterAge, FilterCardPerPage, PaginationComponent } from "./components"
 
 import './index.css'
-import axios from "axios";
-import { IData } from "./types";
-import { Flex } from "@chakra-ui/react";
+import { Flex, Spinner } from "@chakra-ui/react";
+import { getData } from "./services";
 
 function App() {
 
-  const [data, setData] = useState<IData[]>([]);
-
-  useEffect(() => {
-    axios('https://swapi.dev/api/people/').then(({data}: {data: {results: IData[]}}) => {
-      setData(data.results);
-    })
-  }, []);
+  const [page, setPage] = useState(1);
+  const { data, isLoading } = useQuery(['star-wars', page], () => getData(page),{
+    staleTime: 100000
+  })
 
   return (
     <div className="App">
@@ -23,19 +20,26 @@ function App() {
         <FilterCardPerPage/>
       </Flex>
       <main>
-        {data.map(person => (
-          <CardComponent 
-            key={person.name}
-            name={person.name}
-            birth_year={person.birth_year}
-            gender={person.gender}
-            height={Number(person.height)}
-            mass={Number(person.mass)}
-          />
-        ))}
+        { isLoading ?
+          <Spinner size='xl' className="spinner" color="#fff"/>
+            :
+            data && data.map(person => (
+              <CardComponent 
+                key={person.name}
+                name={person.name}
+                birth_year={person.birth_year}
+                gender={person.gender}
+                height={Number(person.height)}
+                mass={Number(person.mass)}
+              />
+          ))
+        }
       </main>
       <footer>
-        <PaginationComponent/>
+        <PaginationComponent
+          page={page}
+          setPage={setPage}
+        />
       </footer>
     </div>
   )

@@ -1,10 +1,13 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
+import Modal from 'react-modal';
 import { CardComponent, FilterAge, FilterCardPerPage, PaginationComponent } from "./components"
 
 import './index.css'
 import { Flex, Spinner } from "@chakra-ui/react";
 import { getData } from "./services";
+
+Modal.setAppElement('#root');
 
 function App() {
 
